@@ -80,22 +80,23 @@ animation: popIn 0.6s ease;
 }
 
 #typeName {
-  /* --- 既存の装飾 --- */
+  /* --- 装飾 --- */
   font-weight: bold;
   background: linear-gradient(90deg,#ff6b9a,#6bbcff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 10px 0;
-  display: inline-block;
   animation: pop 0.6s ease;
 
-  /* --- 1行に収めるための追加設定 --- */
-  font-size: 8cqw;         /* 枠の幅に合わせて文字サイズを自動調整 */
-  white-space: nowrap;    /* 絶対に改行させない */
-  max-width: 100%;        /* 枠からはみ出さない */
-  overflow: hidden;       /* 万が一のときもはみ出しを隠す */
-  display: block;         /* 横幅いっぱいを基準にする */
+  /* --- 1行に収めるための修正 --- */
+  display: block;
+  width: 100%;          /* 横幅いっぱいを使う */
+  white-space: nowrap;  /* 改行を禁止 */
+  font-size: 7cqw;      /* 8から7に少し小さくして余裕を持たせる */
+  overflow: hidden;     /* はみ出しをカット */
+  text-overflow: clip;  /* 切れる場合はきれいに切る */
+  text-align: center;
 }
 
 /* 親要素（container）に基準を設定 */
@@ -290,6 +291,10 @@ img {
   }
   .title {
     font-size: 20px;
+  }
+  #typeName {
+    font-size: 7.5cqw; /* スマホの時は少しだけ大きく調整 */
+    letter-spacing: -1px; /* 文字の間隔をわずかに詰めて収まりやすくする */
   }
   #question {
     font-size: 18px;
