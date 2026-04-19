@@ -284,24 +284,26 @@ img {
 
     <div id="graph"></div>
 
-    <div class="section" style="animation-delay:0.2s;"><b>概要</b><p id="desc"></p></div>
-    <div class="section" style="animation-delay:0.4s;"><b>強み</b><p id="good"></p></div>
-    <div class="section" style="animation-delay:0.6s;"><b>弱点</b><p id="bad"></p></div>
+    <div class="section" style="animation-delay:0.2s;"><b>このタイプは…</b><p id="desc"></p></div>
+    <div class="section" style="animation-delay:0.4s;"><b>あなたの魅力</b><p id="good"></p></div>
+    <div class="section" style="animation-delay:0.6s;"><b>あなたの弱点</b><p id="bad"></p></div>
     <div class="section" style="animation-delay:0.8s;"><b>アドバイス</b><p id="advice"></p></div>
+
+<a href="https://forms.gle/jbtjXMtidgLBtDqs5" target="_blank" class="enqueteLink">
+  📋 みんなの結果集計中！アンケートにご協力ください 💖
+</a>
 
    <br>
     <button class="shareBtn" onclick="copyResult()">✨結果をコピーしてシェアする</button>
     <button class="retryBtn" onclick="location.reload()">もう一度診断する</button>
 
-    <a href="https://forms.gle/jbtjXMtidgLBtDqs5" target="_blank" class="enqueteLink">
-      📋 診断結果なんだった？？アンケートに答えて欲しいです！ 💖
-    </a>
+
   </div>
 
 </div>
 
 <script>
-let name="", index=0;s
+let name="", index=0;
 let A=0, C=0, R=0;
 let currentType = "";
 
@@ -495,7 +497,7 @@ advice:"このタイプは、いきなり恋愛しようとしなくて、ハー
   document.getElementById("bad").textContent = t.bad;
   document.getElementById("advice").textContent = t.advice;
 
-  // グラフ描画
+// グラフ描画
   const A_per = toPercent(A, totalA_max);
   const C_per = toPercent(C, totalC_max);
   const R_per = toPercent(R, totalR_max);
@@ -505,7 +507,7 @@ advice:"このタイプは、いきなり恋愛しようとしなくて、ハー
     createBarHTML("行動", "  A（積極型）", "  P（消極型）", A_per, "#ff6b9a", "#6bbcff") +
     createBarHTML("自信", "  C（自信あり）", "  I（自信なし）", C_per, "#ffb86b", "#9b6bff") +
     createBarHTML("環境", "  R（環境十分）", "  L（環境不足）", R_per, "#4cd97b", "#ff6b6b");
-}
+} // ← この閉じカッコが抜けていました
 
 function copyResult() {
   const text = `${name}さんの診断結果は【${currentType}】でした！\n#彼氏ができない原因診断`;
