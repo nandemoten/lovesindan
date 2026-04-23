@@ -32,6 +32,22 @@ transform: scale(1);
 animation: popIn 0.6s ease;
 }
 
+/* 進捗バーの見た目 */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff9ad5, #9ad7ff);
+  transition: width 0.4s ease;
+}
+
 @keyframes popIn{
 0%{transform:scale(0.9);opacity:0;}
 100%{transform:scale(1);opacity:1;}
@@ -334,6 +350,10 @@ img {
   </div>
 
   <div id="quiz" class="hidden">
+    <div class="progress-container">
+      <div id="progressBar" class="progress-fill"></div>
+    </div>
+    <div id="progressText" style="font-size: 12px; color: #888; margin-bottom: 10px; text-align: right;"></div>
     <h2 id="question"></h2>
     <div id="choices"></div>
   </div>
@@ -406,13 +426,19 @@ function startTest() {
 }
 
 function showQ(){
-  let q=questions[index];
-  document.getElementById("question").innerText=q.q;
-  let html="";
-  q.a.forEach(choice=>{
-    html+=`<button onclick="answer(${choice[1]})">${choice[0]}</button>`;
+  let q = questions[index];
+  
+  // 進捗率を計算してバーと数字を更新
+  const progressPercent = ((index + 1) / questions.length) * 100;
+  document.getElementById("progressBar").style.width = progressPercent + "%";
+  document.getElementById("progressText").innerText = (index + 1) + " / " + questions.length;
+
+  document.getElementById("question").innerText = q.q;
+  let html = "";
+  q.a.forEach(choice => {
+    html += `<button onclick="answer(${choice[1]})">${choice[0]}</button>`;
   });
-  document.getElementById("choices").innerHTML=html;
+  document.getElementById("choices").innerHTML = html;
 }
 
 function answer(score){
