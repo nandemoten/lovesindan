@@ -600,9 +600,9 @@ function showResult(){
 
   // 画像設定
   const images = {
-    ACR: "IMG_4315_3.jpg", // スペースをアンダースコアにするか、実際のファイル名に厳密に合わせる
-    ACL: "IMG_4318_3.jpg",
-    AIR: "IMG_4319_3.jpg",
+    ACR: "IMG_4315 3.jpg", // スペースをアンダースコアにするか、実際のファイル名に厳密に合わせる
+    ACL: "IMG_4318. 3.jpg",
+    AIR: "IMG_4319 3.jpg",
     AIL: "IMG_4342.jpg",
     PCR: "IMG_4341.jpg",
     PCL: "IMG_4339.jpg",
@@ -682,21 +682,22 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
 } // ← この閉じカッコが抜けていました
 
 // 1. まず、この一行を関数の外（一番上か、関数の直前）に追加
+// スクリプトの終わりの方に貼り付けてください
 let hasClosedSurvey = false; 
 
-// 2. openModal をこれに書き換え
 function openModal() {
+  // すでに閉じていたら、アンケートを出さずにリロード（最初に戻る）
   if (hasClosedSurvey) {
-    location.reload(); // すでに閉じたことがあれば、窓を出さずにリロード
+    location.reload(); 
     return;
   }
   document.getElementById("surveyModal").classList.remove("hidden");
 }
 
-// 3. closeModal をこれに書き換え
 function closeModal() {
   document.getElementById("surveyModal").classList.add("hidden");
-  hasClosedSurvey = true; // 「一度閉じた」という記録をつける
+  // 「一度閉じた」という証拠を残す
+  hasClosedSurvey = true;
 }
 
 // 4. (もしあれば) realRetry 関数などは消しても大丈夫です
