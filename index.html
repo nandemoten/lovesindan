@@ -107,8 +107,8 @@ font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif;
   background: linear-gradient(135deg, #ffd6ec, #d6f0ff);
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start; /* ← ここを変更：上詰めにします */
+  min-height: 100vh;      /* ← ここを変更：最低100%にします */
   color: #333;
 }
 
@@ -120,8 +120,7 @@ width:90%;
 max-width:600px;
 text-align:center;
 box-shadow:0 10px 30px rgba(171, 171, 171, 0.292);
-max-height:90vh;
-overflow-y:auto;
+margin: 20px auto;     /* ← ここを足す：上下に隙間を作る */
 transform: scale(1);
 animation: popIn 0.6s ease;
 }
@@ -681,7 +680,8 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
     createBarHTML("行動", "  A（積極型）", "  P（消極型）", A_per, "#ff6b9a", "#6bbcff") +
     createBarHTML("自信", "  C（自信あり）", "  I（自信なし）", C_per, "#ffb86b", "#9b6bff") +
     createBarHTML("環境", "  R（環境十分）", "  L（環境不足）", R_per, "#4cd97b", "#ff6b6b");
-startScrollSpy(); 
+
+  startScrollSpy(); 
 }
 
 // 1. まず、この一行を関数の外（一番上か、関数の直前）に追加
