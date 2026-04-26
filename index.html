@@ -467,7 +467,7 @@ img {
 
    <br>
     <button class="shareBtn" onclick="copyResult()">✨結果をコピーしてシェアする</button>
-    <button class="retryBtn" onclick="openModal()">もう一度診断する</button>
+    <button class="retryBtn" onclick="location.reload()">✨もう一度診断する</button>
 <p style="margin-top: 20px;">
   <a href="javascript:void(0)" onclick="openModal()" style="color: #ff6b9a; font-size: 18px; text-decoration: underline;">
     結果のアンケートに答える💘
@@ -687,19 +687,41 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
 // スクリプトの終わりの方に貼り付けてください
 let hasClosedSurvey = false; 
 
+// 窓を開く関数（スクロールで自動で呼ばれるようになります）
 function openModal() {
-  // すでに閉じていたら、アンケートを出さずにリロード（最初に戻る）
-  if (hasClosedSurvey) {
-    location.reload(); 
-    return;
+  // すでに閉じていた場合は、もう出さない
+  if (hasClosedSurvey) return;
+  
+  const modal = document.getElementById("surveyModal");
+  if (modal.classList.contains("hidden")) {
+    modal.classList.remove("hidden");
   }
-  document.getElementById("surveyModal").classList.remove("hidden");
+startScrollSpy();
 }
 
+// 窓を閉じる関数
 function closeModal() {
   document.getElementById("surveyModal").classList.add("hidden");
-  // 「一度閉じた」という証拠を残す
-  hasClosedSurvey = true;
+  hasClosedSurvey = true; // 一度閉じたら記録する
+}
+
+// --- ここから「スクロール監視」のコード ---
+// 画面に特定の要素が入ってきたら openModal を実行する設定
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    // 「もう一度診断する」ボタン（retryBtn）が画面に見えたら
+    if (entry.isIntersecting) {
+      openModal();
+    }
+  });
+}, { threshold: 0.1 }); // 10%くらい見えたら反応
+
+// 診断結果が表示された後に、ボタンの監視を開始する
+function startScrollSpy() {
+  const target = document.querySelector(".retryBtn");
+  if (target) {
+    observer.observe(target);
+  }
 }
 
 // 4. (もしあれば) realRetry 関数などは消しても大丈夫です
