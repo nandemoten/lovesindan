@@ -681,42 +681,37 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
     createBarHTML("行動", "  A（積極型）", "  P（消極型）", A_per, "#ff6b9a", "#6bbcff") +
     createBarHTML("自信", "  C（自信あり）", "  I（自信なし）", C_per, "#ffb86b", "#9b6bff") +
     createBarHTML("環境", "  R（環境十分）", "  L（環境不足）", R_per, "#4cd97b", "#ff6b6b");
-} // ← この閉じカッコが抜けていました
+startScrollSpy(); 
+}
 
 // 1. まず、この一行を関数の外（一番上か、関数の直前）に追加
 // スクリプトの終わりの方に貼り付けてください
+// アンケートを閉じたかどうかの記録
 let hasClosedSurvey = false; 
 
-// 窓を開く関数（スクロールで自動で呼ばれるようになります）
+// 窓を開く関数
 function openModal() {
-  // すでに閉じていた場合は、もう出さない
-  if (hasClosedSurvey) return;
-  
-  const modal = document.getElementById("surveyModal");
-  if (modal.classList.contains("hidden")) {
-    modal.classList.remove("hidden");
-  }
-startScrollSpy();
+  if (hasClosedSurvey) return; // すでに閉じていたら何もしない
+  document.getElementById("surveyModal").classList.remove("hidden");
 }
 
 // 窓を閉じる関数
 function closeModal() {
   document.getElementById("surveyModal").classList.add("hidden");
-  hasClosedSurvey = true; // 一度閉じたら記録する
+  hasClosedSurvey = true; // 閉じた記録を付ける
 }
 
-// --- ここから「スクロール監視」のコード ---
-// 画面に特定の要素が入ってきたら openModal を実行する設定
+// スクロールを監視する設定（Intersection Observer）
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    // 「もう一度診断する」ボタン（retryBtn）が画面に見えたら
-    if (entry.isIntersecting) {
+    // 監視対象（もう一度診断するボタン）が10%以上画面に見えたら実行
+    if (entry.isIntersecting && !hasClosedSurvey) {
       openModal();
     }
   });
-}, { threshold: 0.1 }); // 10%くらい見えたら反応
+}, { threshold: 0.1 });
 
-// 診断結果が表示された後に、ボタンの監視を開始する
+// ボタンの監視を開始する関数
 function startScrollSpy() {
   const target = document.querySelector(".retryBtn");
   if (target) {
