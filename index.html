@@ -107,22 +107,20 @@ body {
   background: linear-gradient(135deg, #ffd6ec, #d6f0ff);
   display: flex;
   justify-content: center;
-  align-items: center;    /* flex-start から center に戻す */
+  align-items: center; /* 上下左右中央に配置 */
   min-height: 100vh;
-  color: #333;
 }
 
-.container{
-background:#fff;
-padding:40px;
-border-radius:25px;
-width:90%;
-max-width:600px;
-text-align:center;
-box-shadow:0 10px 30px rgba(171, 171, 171, 0.292);
-margin: 20px auto;     /* ← ここを足す：上下に隙間を作る */
-transform: scale(1);
-animation: popIn 0.6s ease;
+.container {
+  background: #fff;
+  padding: 40px;
+  border-radius: 25px;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(171, 171, 171, 0.292);
+  margin: 20px auto; /* 画面中央に固定 */
+  box-sizing: border-box; /* パディングを含めたサイズ計算 */
 }
 
 /* 進捗バーの見た目 */
@@ -442,30 +440,9 @@ img {
     transition: 0.2s;
     cursor: pointer;
   }
-  .back-btn-styled span { font-weight: bold; margin-right: 5px; }
-  .back-btn-styled:hover { background: #fff5f9 !important; transform: translateY(-2px); }
-</style> 
 
----
 
-### 2. HTML（ボタン本体）の入れ替え場所
-質問を表示するエリアの中にある、`<div id="choices"></div>` の**すぐ下**に入れます。
-
-**【265行目付近：`<div id="quiz">` の中を探してください】**
-```html
-  <div id="quiz" class="hidden">
-    <div class="progress-container">
-      <div id="progressBar" class="progress-fill"></div>
-    </div>
-    <div id="progressText" style="font-size: 12px; color: #888; margin-bottom: 10px; text-align: right;"></div>
-    <h2 id="question"></h2>
-    
-    <div id="choices"></div> <button id="backBtn" onclick="goBack()" class="back-btn-styled">
-      <span>←</span> 1つ前へ
-    </button>
-  </div>
-
-</style> 
+</style>
 
 
 </head>
@@ -520,7 +497,6 @@ img {
 
 <script>
 
-<script>
 let name="", index=0;
 let A=0, C=0, R=0;
 let currentType = "";
@@ -577,6 +553,7 @@ function showQ(){
   document.getElementById("progressBar").style.width = progressPercent + "%";
   document.getElementById("progressText").innerText = (index + 1) + " / " + questions.length;
   document.getElementById("question").innerText = q.q;
+  document.getElementById("choices").innerHTML = "";
   
   let html = "";
   q.a.forEach(choice => {
@@ -588,17 +565,23 @@ function showQ(){
 function answer(score){
   let axis = questions[index].axis;
 
-  // 【追加】どの軸に何点入れたかを履歴（history）に保存する
+  // 1. 今の回答を履歴に保存（戻るボタン用）
   history.push({ axis: axis, score: score });
 
-  if(axis==="A") A+=score;
-  if(axis==="C") C+=score;
-  if(axis==="R") R+=score;
+  // 2. 点数を計算
+  if(axis==="A") A += score;
+  if(axis==="C") C += score;
+  if(axis==="R") R += score;
   
+  // 3. 次の質問へ
   index++;
-  index < questions.length ? showQ() : showResult();
+  
+  if(index < questions.length) {
+    showQ();
+  } else {
+    showResult();
+  }
 }
-
 // 【丸ごと追加】「戻る」ボタンを押した時の処理
 function goBack() {
   if (index > 0) {
