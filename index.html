@@ -427,7 +427,44 @@ img {
     font-size: 15px;
   }
 }
+/* 今あるコードの最後の方にこれを貼り付け */
+  /* 戻るボタンの可愛いデザイン */
+  .back-btn-styled {
+    display: none; 
+    background: #ffffff !important;
+    color: #ff9ad5 !important;
+    border: 2px solid #ff9ad5 !important;
+    border-radius: 50px !important;
+    font-size: 14px !important;
+    padding: 8px 20px !important;
+    width: auto !important;
+    margin: 20px auto 0 !important;
+    box-shadow: 0 4px 10px rgba(255, 154, 213, 0.2);
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .back-btn-styled span { font-weight: bold; margin-right: 5px; }
+  .back-btn-styled:hover { background: #fff5f9 !important; transform: translateY(-2px); }
+</style> ```
 
+---
+
+### 2. HTML（ボタン本体）の入れ替え場所
+質問を表示するエリアの中にある、`<div id="choices"></div>` の**すぐ下**に入れます。
+
+**【265行目付近：`<div id="quiz">` の中を探してください】**
+```html
+  <div id="quiz" class="hidden">
+    <div class="progress-container">
+      <div id="progressBar" class="progress-fill"></div>
+    </div>
+    <div id="progressText" style="font-size: 12px; color: #888; margin-bottom: 10px; text-align: right;"></div>
+    <h2 id="question"></h2>
+    
+    <div id="choices"></div> <button id="backBtn" onclick="goBack()" class="back-btn-styled">
+      <span>←</span> 1つ前へ
+    </button>
+  </div>
 
 </style>
 
@@ -450,10 +487,10 @@ img {
     <div id="progressText" style="font-size: 12px; color: #888; margin-bottom: 10px; text-align: right;"></div>
     <h2 id="question"></h2>
     <div id="choices"></div>
-    <button id="backBtn" onclick="goBack()" style="background:none; color:#bbb; font-size:14px; text-decoration:underline; margin-top:20px; width:auto; box-shadow:none;">1つ前の質問に戻る</button>
-  </div>
-
-  <div id="result" class="hidden">
+    <button id="backBtn" onclick="goBack()" class="back-btn-styled">
+      <span>←</span> 1つ前へ
+    </button>
+</div> <div id="result" class="hidden">
     <p id="resultTitle" style="color:#888; margin-bottom:0;"></p>
     <h1 id="typeName"></h1><br>
     <img id="resultImage">
@@ -524,15 +561,19 @@ function startTest() {
 
 function showQ(){
   let q = questions[index];
+
+  // 1問目なら戻るボタンを隠し、2問目以降なら表示する
   const backBtn = document.getElementById("backBtn");
-  if(backBtn) backBtn.style.display = (index === 0) ? "none" : "inline-block";
-  
-  // 進捗率を計算してバーと数字を更新
+  if(backBtn) {
+    backBtn.style.display = (index === 0) ? "none" : "block";
+  }
+
+  // 以下、進捗バーや質問文の表示（今のコードのままでOK）
   const progressPercent = ((index + 1) / questions.length) * 100;
   document.getElementById("progressBar").style.width = progressPercent + "%";
   document.getElementById("progressText").innerText = (index + 1) + " / " + questions.length;
-
   document.getElementById("question").innerText = q.q;
+  
   let html = "";
   q.a.forEach(choice => {
     html += `<button onclick="answer(${choice[1]})">${choice[0]}</button>`;
