@@ -485,7 +485,7 @@ img {
 
     <br>
     <button class="shareBtn" onclick="copyResult()">✨結果をコピーしてシェアする</button>
-    <button class="retryBtn" onclick="openModal(true)">✨もう一度診断する</button>
+    <button class="retryBtn" onclick="openRetryModal()">✨もう一度診断する</button>
 
     <p style="margin-top: 20px;">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSep82S8CdGrPXA1CoeXsP9HpzySO_Junsv-g3CJfz8WcpD_DA/viewform?usp=publish-editor" target="_blank" style="color: #ff6b9a; font-size: 18px; text-decoration: underline;">
@@ -738,15 +738,13 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
   startScrollSpy(); 
 }
 
-// 1. まず、この一行を関数の外（一番上か、関数の直前）に追加
-// スクリプトの終わりの方に貼り付けてください
-// アンケートを閉じたかどうかの記録
+// 変数の定義（すでにある場合は二重定義に注意）
 let hasClosedSurvey = false; 
-let isRetrying = false; // 「もう一度」ボタンを押したかどうかのフラグ
+let isRetrying = false; 
 
-// 「もう一度診断する」ボタンを押した時
+// ★「もう一度診断する」ボタン専用の関数
 function openRetryModal() {
-  isRetrying = true; // やり直しフラグをオンにする
+  isRetrying = true; // やり直しモードON
   document.getElementById("surveyModal").classList.remove("hidden");
 }
 
@@ -758,7 +756,7 @@ function closeModal() {
     // 「もう一度」から開いた窓を閉じたら、最初に戻る
     location.reload(); 
   } else {
-    // 自動で出た窓を閉じたら、フラグを立てて二度と出さないようにする
+    // 自動で出た窓を閉じたら、フラグを立てて二度と自動表示させない
     hasClosedSurvey = true; 
   }
 }
@@ -777,19 +775,18 @@ function answerAndReload() {
   }
 }
 
-
-// スクロール監視
+// スクロール監視（自動表示用）
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting && !hasClosedSurvey) {
-      // 勝手に出る時は isRetrying を true にしない
+      // 自動表示のときは isRetrying を true にしない
+      isRetrying = false; 
       document.getElementById("surveyModal").classList.remove("hidden");
       observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.01 });
 
-// ボタンの監視を開始する関数
 function startScrollSpy() {
   const target = document.querySelector(".retryBtn");
   if (target) {
@@ -797,13 +794,10 @@ function startScrollSpy() {
   }
 }
 
-// 4. (もしあれば) realRetry 関数などは消しても大丈夫です
-
-// 結果をコピーする機能
+// 結果をコピーする機能（変更なし）
 function copyResult() {
   const typeName = document.querySelector(".type-jp").innerText;
   const url = window.location.href; 
-  // 思わずクリックしたくなる文章に改造
   const text = `【結果】私の恋愛タイプは...＼ ${typeName} ／でした！\n\n彼氏ができない原因がわかっちゃうかも🫢\nここで診断できるよ↓\n${url}\n#なんでモテん診断 #恋愛診断`;
   
   navigator.clipboard.writeText(text).then(() => {
