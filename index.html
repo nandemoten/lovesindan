@@ -742,56 +742,52 @@ advice:"ここのタイプは、いきなり恋愛しようとしなくて、ハ
 // スクリプトの終わりの方に貼り付けてください
 // アンケートを閉じたかどうかの記録
 let hasClosedSurvey = false; 
-let isManualOpen = false; // ★追加：ボタンを押して開いたかどうかの目印
+let isRetrying = false; // 「もう一度」ボタンを押したかどうかのフラグ
 
-// 窓を開く関数
-function openModal(manual = false) { // manualという引数を受け取れるようにする
-  if (manual) {
-    isManualOpen = true; // ボタンから開いた場合はtrue
-  } else if (hasClosedSurvey) {
-    return; 
-  }
+// 「もう一度診断する」ボタンを押した時
+function openRetryModal() {
+  isRetrying = true; // やり直しフラグをオンにする
   document.getElementById("surveyModal").classList.remove("hidden");
 }
 
+// 窓を閉じる（×ボタン）時の処理
 function closeModal() {
   document.getElementById("surveyModal").classList.add("hidden");
   
-  if (isManualOpen) {
-    // ボタンから開いた時だけ最初に戻る
+  if (isRetrying) {
+    // 「もう一度」から開いた窓を閉じたら、最初に戻る
     location.reload(); 
   } else {
-    // 自動で出た時は、次から自動で出ないように記録して終わり
+    // 自動で出た窓を閉じたら、フラグを立てて二度と出さないようにする
     hasClosedSurvey = true; 
   }
 }
 
 // アンケート回答ボタンを押した時の処理
 function answerAndReload() {
-  // 1. ボタン経由での操作であることを記録（これがないとリロードされません）
-  isManualOpen = true; 
-  
-  // 2. 0.5秒後に closeModal を実行してリロードさせる
-  // （即座にリロードするとアンケートページが開かないことがあるため）
-  setTimeout(() => {
-    closeModal();
-  }, 500); 
+  if (isRetrying) {
+    // 「もう一度」から開いた場合は、0.5秒後にリロードして最初に戻す
+    setTimeout(() => {
+      location.reload();
+    }, 500);
+  } else {
+    // 自動で出た窓から回答した場合は、リロードせず窓を閉じるだけ（結果画面に残る）
+    hasClosedSurvey = true;
+    document.getElementById("surveyModal").classList.add("hidden");
+  }
 }
 
-// スクロールを監視する設定（Intersection Observer）
-// スクロールを監視する設定（Intersection Observer）
+
+// スクロール監視
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    // 画面に「もう一度やる」ボタンが少しでも入ってきたら
     if (entry.isIntersecting && !hasClosedSurvey) {
-  openModal(); // ここはカッコの中は空っぽ（false扱い）でOK
-  observer.unobserve(entry.target);
-}
+      // 勝手に出る時は isRetrying を true にしない
+      document.getElementById("surveyModal").classList.remove("hidden");
+      observer.unobserve(entry.target);
+    }
   });
-}, { 
-  root: null,      /* 画面全体を基準にする */
-  threshold: 0.01  /* 1%でもボタンが見えたら即座に実行 */
-});
+}, { threshold: 0.01 });
 
 // ボタンの監視を開始する関数
 function startScrollSpy() {
